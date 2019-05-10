@@ -4,7 +4,6 @@
 
 Given a two strings can genetic programming be used to learn some hidden matching rule?
 
-
 #### Test Data
 
 We generate sample strings using `data_gen.py`, this format is based on Network Rail Berth Describer ids:
@@ -27,7 +26,7 @@ def build_features(sample1, sample2):
 	return [ord(a) - ord(b) for a, b in zip(sample1, sample2)]
 ```
 Hence, for example, a generated matching pair of "AA_1234" and "ZX_1325" is represented by the feature [-25, -23, 0, 0, -1, 1, -1].
-#### Algorithm Graphs 'Trees'
+#### Algorithm Graphs or 'Trees'
 
 Matching algorithms are assembled from graphs (DAGs) of operations, here referred to as 'algorithm trees'. Where operations are represented as vertices in the trees.
 
@@ -85,7 +84,7 @@ genetic.evolve(
 ```
 During evolution basic generation statistics are logged to terminal and a plot is generated showing progress:
 
-![evolution stats](https://github.com/fredshone/g_prog/fig.png "evolution stats example")
+![evolution stats](https://github.com/fredshone/g_prog/blob/master/fig.png "evolution stats example")
 
 After a solution is found or preset number of generations completed, the final algorithm is printed to terminal...
 ```
@@ -100,34 +99,33 @@ is greater
  abs
   p5
 ```
-Given the candidate strings A and B, this example translates to:
+Given the candidate strings A and B, this result translates to the following solution function:
 ```
-isless = 	
-if (A[4]-B[4]) < 5:
-		return 1
-	else:
-		return 0
-temp = if i[0] > abs(A[5]-B[5]):
-		return 1
-	else:
-		return 0
-		
-if temp > abs(A[5]-B[5]):
-		return 1
-	else:
-		return 0
+def is_match(A, B):
+
+    if (A[4] - B[4]) < 5:
+            a = 1
+        else:
+            a = 0
+            
+    if a > ((A[2] - B[2]) - (A[5] - B[5])):
+        b = 1
+    else:
+        b = 0
+        
+    if b > abs(A[5]-B[5]):
+            return 1
+        else:
+            return 0
 ```
-This particular example was only 86% accurate across 500 training examples.
+This particular example was only 86% accurate across 500 training examples and is somewhat complex. In general the trees often incorporate redundant operations (such as abs(abs())) and are not encouraged to be concise. This can be fixed in future by adding complexity into the fitness function or by adding an additional 'slimming' process.
 
-#### Features
-
-- type sensitive operations
-- features for string matching application
-- trial string data generator (rookie)
+Most usefully the results are humanly interpretable (especially compared to something exotic with hidden layers) and can be used to identify important features and patterns.
  
 #### todo
 
-- add generation stats to help with tuning
+- improve generation stats to help with tuning
+- incorporate complexity into fitness function or add simplifying stage
 - add tweaking mutations for constants as score is high - ie adjust types of mutations
 - implement scoring with NR TD network for training data - based on graph distance?
-- implement within mathcing framework for TD stream
+- implement within matching framework for TD stream
