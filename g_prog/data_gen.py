@@ -17,7 +17,14 @@ def get_describer():
 
 
 def tweak_describer(sample):
-	return get_char(k=2) + '_' + get_char() + sample[4:]
+	"""
+	Given a describer string - return a similar string to be used as a partial match
+	"""
+	shifts = choices([-1, 1], k=3)
+	return get_char(k=2) + '_' + get_num()\
+	+ str(int(sample[-3:]) + shifts[0])\
+	+ str(int(sample[-2:]) + shifts[1])\
+	+ str(int(sample[-1:]) + shifts[2])
 
 
 def build_features(sample1, sample2):

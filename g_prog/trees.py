@@ -3,10 +3,9 @@ from copy import deepcopy
 from math import log
 
 
-
 class Function_wrapper:
 	"""
-	wrapper for operations
+	wrapper for node operations
 	"""
 
 	def __init__(self, function, types_in, type_out, name):
@@ -88,10 +87,10 @@ def make_random_tree(functions, pc, out_type='int', depth=2, fpr=.5, ppr=.6):
 		return Const_node(randint(0, 10))
 
 
-def mutate(functions, pc, tree, p=.1):
+def mutate(functions, pc, tree, p=.1, pt=.5):
 
 	if random() < p:
-		if isinstance(tree, Const_node):
+		if isinstance(tree, Const_node) and random() < pt:
 			tree.mutate()
 			return tree
 		else:
@@ -117,5 +116,30 @@ def crossover(tree1, tree2, p=.4, top=1):
 			for c in tree1.children]
 
 		return result
+
+
+def calc_size(node):
+
+	if not isinstance(node, Node):
+
+		return 1, 1
+
+	else:
+
+		size = 0
+		depths = []
+
+		for child in node.children:
+
+			child_size, child_depth = calc_size(child)
+
+			size += child_size 
+			depths.append(child_depth)
+
+		return size + 1, max(depths) + 1
+
+
+
+
 
 
