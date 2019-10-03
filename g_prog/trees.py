@@ -30,7 +30,7 @@ class Node:
 		return self.function(results)
 
 	def display(self, indent=0):
-		print((' ' * indent) + self.name)
+		print(('  ' * indent) + self.name)
 		for c in self.children:
 			c.display(indent + 1)
 
@@ -45,7 +45,7 @@ class Param_node:
 		return input[self.idx]
 
 	def display(self, indent=0):
-		print(f"{' ' * indent}p{str(self.idx)}")
+		print(f"{'  ' * indent}p{str(self.idx)}")
 
 
 class Const_node:
@@ -61,7 +61,7 @@ class Const_node:
 		self.v += choice([-1, 1])
 
 	def display(self, indent=0):
-		print(f"{' ' * indent}{str(self.v)}")
+		print(f"{'  ' * indent}{str(self.v)}")
 
 
 integer_nodes = [Param_node, Const_node]
@@ -94,13 +94,37 @@ def mutate(functions, pc, tree, p=.1, pt=.5):
 			tree.mutate()
 			return tree
 		else:
-			return make_random_tree(functions, pc, out_type=tree.type_out)
+			return make_random_tree(
+				functions,
+				pc,
+				depth=choice([1, 2, 3, 4]),
+				out_type=tree.type_out
+			)
 	else:
 		result = deepcopy(tree)
 
 		if isinstance(tree, Node):
-			result.children = [mutate(functions, pc, child, p)
-			for child in tree.children]
+			result.children = [
+				mutate(functions, pc, child, p) for child in tree.children
+			]
+
+		return result
+
+
+def minor_mutate(tree, p=.5):
+
+	result = deepcopy(tree)
+
+	if isinstance(result, Const_node) and random() < p:
+		result.mutate()
+		return result
+
+	else:
+
+		if isinstance(result, Node):
+			result.children = [
+				minor_mutate(child, p) for child in tree.children
+			]
 
 		return result
 

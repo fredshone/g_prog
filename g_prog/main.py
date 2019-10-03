@@ -1,4 +1,4 @@
-import data_gen as describers
+import step_gen as describers
 import genetic
 from ops import basic_functions as functions
 
@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
 	print('starting')
 
-	hidden_set = describers.build_hidden_set(size=500)
+	hidden_set = describers.build_hidden_set(size=10000)
 
 	# for row in hidden_set[:20]:
 	# 	print(row)
@@ -17,11 +17,12 @@ if __name__ == '__main__':
 
 	genetic.evolve(
 		ranker,
-		pop_size=20,
+		depth=4,
+		pop_size=100,
 		functions=functions,
-		maxgen=50,
-		mutation_rate=.5,
-		breeding_rate=.5,
+		maxgen=100,
+		mutation_rate=.3,
+		breeding_rate=.6,
 		pexp=.5,
 		pnew=.1
 		)

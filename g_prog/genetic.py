@@ -40,18 +40,36 @@ class Generation:
 					breeding_rate,
 					mutation_rate):
 
-		self.population = [ancestors.scores[0][1], ancestors.scores[1][1]]
+		# elitism
+		top = int(self.pop_size * 0.2)
+		self.population = [
+			ancestors.scores[i][1] for i in range(top)
+		]
+
+		# minor mutation of elites
+		for elite in [
+			ancestors.scores[i][1] for i in range(top)
+		]:
+			self.population.append(
+				trees.minor_mutate(
+					elite,
+					p=.5
+				)
+			)
 
 		while len(self.population) < self.pop_size:
 			if random() > pnew:
-				self.population.append(trees.mutate(
-					self.functions,
-					self.inputs,
-					trees.crossover(ancestors.scores[select_index()][1],
-						ancestors.scores[select_index()][1],
-						p=breeding_rate),
-					p=mutation_rate,
-					pt = ancestors.scores[0][0] / 2)
+				self.population.append(
+					trees.mutate(
+						self.functions,
+						self.inputs,
+						trees.crossover(
+							ancestors.scores[select_index()][1],
+							ancestors.scores[select_index()][1],
+							p=breeding_rate),
+						p=mutation_rate,
+						pt=ancestors.scores[0][0]
+					)
 				)
 
 			else:
@@ -67,13 +85,16 @@ class Generation:
 
 		size, depth = trees.calc_size(self.scores[0][1])
 
-		print(f"gen {i + 1}, best: {scores[0]}, size: {size}, depth: {depth}. average:{av}")
+		print(f"\ngen {i + 1}, best: {scores[0]}, size: {size}, depth: {depth}. average:{av}")
+		# for rank in range(len(self.population)):
+		# 	size, depth = trees.calc_size(self.scores[rank][1])
+		# 	print(f"\trank {rank}: {scores[rank]}, size: {size}, depth: {depth}.")
 
 		# self.scores[0][1].display()
 
 
 def evolve(rank_function,
-			inputs=7,
+			inputs=6,
 			depth=3,
 			pop_size=1000,
 			functions=functions,
@@ -94,11 +115,14 @@ def evolve(rank_function,
 	population = Generation(pop_size, functions, inputs, depth)
 	population.spawn()
 	fitnesses = population.score(rank_function)
+	scores.append(fitnesses)
+	plt.plot(scores, 'r-')
+	plt.pause(0.001)
 
 	for i in range(maxgen):
 
 		population.display(i)
-		
+
 		if population.scores[0][0] == 1:
 			break
 
@@ -117,8 +141,9 @@ def evolve(rank_function,
 		plt.plot(scores, 'r-')
 		plt.pause(0.001)
 
-	population.scores[0][1].display()
+		population.scores[0][1].display()
 
+	population.scores[0][1].display()
 	plt.show()
 
 
