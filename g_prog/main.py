@@ -20,7 +20,7 @@ if __name__ == '__main__':
 		depth=4,
 		pop_size=100,
 		functions=functions,
-		maxgen=100,
+		maxgen=30,
 		mutation_rate=.3,
 		breeding_rate=.6,
 		pexp=.5,

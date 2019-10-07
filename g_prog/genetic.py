@@ -116,7 +116,7 @@ def evolve(rank_function,
 	population.spawn()
 	fitnesses = population.score(rank_function)
 	scores.append(fitnesses)
-	plt.plot(scores, 'r-')
+	plt.plot(scores, 'r-', alpha=.05)
 	plt.pause(0.001)
 
 	for i in range(maxgen):
@@ -138,7 +138,7 @@ def evolve(rank_function,
 
 		scores.append(population.score(rank_function))
 
-		plt.plot(scores, 'r-')
+		plt.plot(scores, 'r-', alpha=.05)
 		plt.pause(0.001)
 
 		population.scores[0][1].display()
